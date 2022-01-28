@@ -7,6 +7,8 @@ import java.util.Optional;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -34,23 +36,19 @@ import br.com.alura.forum.repository.TopicoRepository;
 @RestController
 @RequestMapping("/topicos")
 public class TopicosController {
-	
+
 	@Autowired
 	private TopicoRepository topicoRepository;
-	
+
 	@Autowired
 	private CursoRepository cursoRepository;
-	
-	
+
 	@GetMapping
-	//http://localhost:8080/topicos?page=0&size=3
-	public Page<TopicoDto> lista(@RequestParam(required=false) String nomeCurso,
-			@PageableDefault(sort="id", direction=Direction.ASC, page = 0, size=10) Pageable  paginacao) {
-		
-		
-//	    http://localhost:8080/topicos?pagina=0&qte=3&ordenacao=id ou qualquer atributo data,nome...etc
-		//Pageable paginacao = PageRequest.of(pagina, qte, Direction.ASC, ordenacao );
-		
+	@Cacheable(value = "listaDeTopicos")
+	// http://localhost:8080/topicos?page=0&size=3
+	public Page<TopicoDto> lista(@RequestParam(required = false) String nomeCurso,
+			@PageableDefault(sort = "id", direction = Direction.ASC, page = 0, size = 10) Pageable paginacao) {
+
 		if (nomeCurso == null) {
 			Page<Topico> topicos = topicoRepository.findAll(paginacao);
 			return TopicoDto.converter(topicos);
@@ -59,32 +57,31 @@ public class TopicosController {
 			return TopicoDto.converter(topicos);
 		}
 	}
-	
-	
+
 	@PostMapping
 	@Transactional
+	@CacheEvict(value = "listaDeTopicos", allEntries = true)
 	public ResponseEntity<TopicoDto> cadastrar(@RequestBody @Valid TopicoForm form, UriComponentsBuilder uriBuilder) {
 		Topico topico = form.converter(cursoRepository);
 		topicoRepository.save(topico);
-		
+
 		URI uri = uriBuilder.path("/topicos/{id}").buildAndExpand(topico.getId()).toUri();
 		return ResponseEntity.created(uri).body(new TopicoDto(topico));
 	}
-	
-	
+
 	@GetMapping("/{id}")
 	public ResponseEntity<DetalhesTopicoDto> detalhar(@PathVariable Long id) {
 		Optional<Topico> topico = topicoRepository.findById(id);
-		
+
 		if (topico.isPresent()) {
 			return ResponseEntity.ok(new DetalhesTopicoDto(topico.get()));
 		}
 		return ResponseEntity.notFound().build();
 	}
-	
-	
+
 	@PutMapping("/{id}")
 	@Transactional
+	@CacheEvict(value = "listaDeTopicos", allEntries = true)
 	public ResponseEntity<TopicoDto> atualizar(@PathVariable Long id, @RequestBody @Valid AtualizacaoTopicoForm form) {
 		Optional<Topico> optionl = topicoRepository.findById(id);
 
@@ -95,10 +92,10 @@ public class TopicosController {
 		return ResponseEntity.notFound().build();
 
 	}
-	
-	
+
 	@DeleteMapping("/{id}")
 	@Transactional
+	@CacheEvict(value = "listaDeTopicos", allEntries = true)
 	public ResponseEntity<?> remover(@PathVariable Long id) {
 		Optional<Topico> topico = topicoRepository.findById(id);
 
@@ -107,15 +104,7 @@ public class TopicosController {
 			return ResponseEntity.ok().build();
 		}
 		return ResponseEntity.notFound().build();
-		
+
 	}
 
 }
-
-
-
-
-
-
-
-
