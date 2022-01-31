@@ -1,6 +1,5 @@
 package br.com.alura.forum.config.security;
 
-import org.aspectj.weaver.ast.And;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,16 +16,16 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import br.com.alura.forum.repository.UsuarioRepository;
 
-
 @EnableWebSecurity
 @Configuration
-public class SecutiryConfigurations extends WebSecurityConfigurerAdapter {
-	
-	
+public class SecurityConfigurations extends WebSecurityConfigurerAdapter {
+
 	@Autowired
 	private AutenticacaoService autenticacaoService;
+	
 	@Autowired
 	private TokenService tokenService;
+	
 	@Autowired
 	private UsuarioRepository usuarioRepository;
 	
@@ -36,13 +35,13 @@ public class SecutiryConfigurations extends WebSecurityConfigurerAdapter {
 		return super.authenticationManager();
 	}
 	
-	//configurações de autenticação
+	//Configuracoes de autenticacao
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 		auth.userDetailsService(autenticacaoService).passwordEncoder(new BCryptPasswordEncoder());
-		
 	}
-	//configurações de Autorizações
+	
+	//Configuracoes de autorizacao
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http.authorizeRequests()
@@ -54,11 +53,11 @@ public class SecutiryConfigurations extends WebSecurityConfigurerAdapter {
 		.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 		.and().addFilterBefore(new AutenticacaoViaTokenFilter(tokenService, usuarioRepository), UsernamePasswordAuthenticationFilter.class);
 	}
-	//configurações de Recursos estaticos(js,css,images)
+	
+	
+	//Configuracoes de recursos estaticos(js, css, imagens, etc.)
 	@Override
 	public void configure(WebSecurity web) throws Exception {
-		
 	}
-	
 	
 }
