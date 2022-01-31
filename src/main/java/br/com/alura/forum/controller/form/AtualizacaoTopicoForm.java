@@ -16,16 +16,8 @@ public class AtualizacaoTopicoForm {
 	@NotNull @NotEmpty @Length(min = 10)
 	private String mensagem;
 
-	public String getTitulo() {
-		return titulo;
-	}
-
 	public void setTitulo(String titulo) {
 		this.titulo = titulo;
-	}
-
-	public String getMensagem() {
-		return mensagem;
 	}
 
 	public void setMensagem(String mensagem) {
@@ -33,16 +25,12 @@ public class AtualizacaoTopicoForm {
 	}
 
 	public Topico atualizar(Long id, TopicoRepository topicoRepository) {
-		//pega o form que vem do banco se estar atualizado
 		Topico topico = topicoRepository.getOne(id);
-		//sobrescreve
+		
 		topico.setTitulo(this.titulo);
 		topico.setMensagem(this.mensagem);
-		
 		
 		return topico;
 	}
 	
-	
-
 }

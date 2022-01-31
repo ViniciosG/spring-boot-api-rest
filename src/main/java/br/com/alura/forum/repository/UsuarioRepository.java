@@ -8,6 +8,6 @@ import br.com.alura.forum.modelo.Usuario;
 
 public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
 	
-	Optional <Usuario> findByEmail(String email);
+	Optional<Usuario> findByEmail(String email);
 
 }

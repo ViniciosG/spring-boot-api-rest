@@ -5,11 +5,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-
 import br.com.alura.forum.modelo.StatusTopico;
 import br.com.alura.forum.modelo.Topico;
 
-public class DetalhesTopicoDto {
+public class DetalhesDoTopicoDto {
+
 	private Long id;
 	private String titulo;
 	private String mensagem;
@@ -18,7 +18,7 @@ public class DetalhesTopicoDto {
 	private StatusTopico status;
 	private List<RespostaDto> respostas;
 	
-	public DetalhesTopicoDto(Topico topico) {
+	public DetalhesDoTopicoDto(Topico topico) {
 		this.id = topico.getId();
 		this.titulo = topico.getTitulo();
 		this.mensagem = topico.getMensagem();
@@ -56,6 +56,5 @@ public class DetalhesTopicoDto {
 	public List<RespostaDto> getRespostas() {
 		return respostas;
 	}
-	
 	
 }
