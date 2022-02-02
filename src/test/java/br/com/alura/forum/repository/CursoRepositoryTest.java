@@ -16,7 +16,7 @@ import br.com.alura.forum.modelo.Curso;
 @DataJpaTest
 @AutoConfigureTestDatabase(replace=AutoConfigureTestDatabase.Replace.NONE)
 @ActiveProfiles("test")
-public class CursoRepositoryTest {
+class CursoRepositoryTest {
 	
 	@Autowired
 	private CursoRepository repository;
@@ -40,14 +40,6 @@ public class CursoRepositoryTest {
 		
 	}
 	
-	@org.junit.jupiter.api.Test
-	public void deveriaCarregarUmCursoQueNaoExiste() {
-		
-		String nomeCurso = "JPA";
-		Curso curso = repository.findByNome(nomeCurso);  
-		Assert.assertNotNull(curso);
-		Assert.assertEquals(nomeCurso, curso.getNome());
-		
-	}
+
 
 }
